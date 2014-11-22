@@ -12,6 +12,9 @@ import SolverState._
  *   - boundary cells:       these are any other (unexplored) cells on the boundary.
  *
  * When none of these cells can be found, then we have defined the maximal shape for our blob.
+ *
+ * This solution assumes that the blob is connected and so it is only necessary to consider potential points at which
+ * the blob may cross the currently defined boundary of the square defined by left, right, top and bottom.
  */
 trait OptimisedSolution extends CellSelection {
 

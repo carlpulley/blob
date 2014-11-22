@@ -5,6 +5,7 @@
 ### Assumptions:
 
   * it is not necessary to parse a formatted text file into an internal 'blob' representation
+  * for the optimised solution, it is assumed that the blob is "connected"
 
 ### Design Notes
 
