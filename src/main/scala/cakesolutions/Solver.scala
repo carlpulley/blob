@@ -37,6 +37,7 @@ abstract class Solver(val grid: Map[(Int, Int), Boolean]) extends SolverState {
   }
 
   def reset(): Unit = {
+    numberOfReads = 0
     left = None
     right = None
     top = None

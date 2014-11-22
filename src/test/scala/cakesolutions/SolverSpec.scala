@@ -25,6 +25,9 @@ class SolverSpec extends Specification {
     "solve supplied example for arbitrary shapes (i.e. not necessarily blobs)" in {
       val basicSolver = new Solver(grid) with ExternalSelection
 
+      val data = (0 to 100).flatMap { _ => basicSolver.reset(); basicSolver.solve().map(_.reads) }
+      println(s"Average result = ${data.sum / 100.0}; Min. reads = ${data.min}; Max. reads = ${data.max}")
+
       basicSolver.solve() must beSome.like {
         case result =>
           println(s"DEBUG: number of basic solver reads = ${result.reads}\n")
@@ -63,6 +66,9 @@ class SolverSpec extends Specification {
           }
         }
       }
+
+      val data = (0 to 100).flatMap { _ => connectedSolver.reset(); connectedSolver.solve().map(_.reads) }
+      println(s"Average result = ${data.sum / 100.0}; Min. reads = ${data.min}; Max. reads = ${data.max}")
 
       connectedSolver.solve() must beSome.like {
         case result =>
