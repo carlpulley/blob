@@ -1,7 +1,5 @@
 package cakesolutions
 
-import SolverState._
-
 /**
  * Case class holding solver result.
  *
@@ -18,7 +16,7 @@ case class Result(left: Int, right: Int, top: Int, bottom: Int, reads: Int)
  *
  * Grid is here represented as a
  */
-abstract class Solver(val grid: Map[(Int, Int), Boolean]) {
+abstract class Solver(val grid: Map[(Int, Int), Boolean]) extends SolverState {
   this: CellSelection =>
 
   var numberOfReads = 0
@@ -36,6 +34,15 @@ abstract class Solver(val grid: Map[(Int, Int), Boolean]) {
       // 0 is present in the cell
       zeroCells = zeroCells + cell
     }
+  }
+
+  def reset(): Unit = {
+    left = None
+    right = None
+    top = None
+    bottom = None
+    oneCells = Set.empty[Cell]
+    zeroCells = Set.empty[Cell]
   }
 
   // Main function for calculating the blob boundaries - a None result signifies that no boundaries exist

@@ -1,9 +1,9 @@
 package cakesolutions
 
 /**
- * Singleton object holding the Solvers shared mutable state.
+ * Solvers internal state.
  */
-object SolverState {
+trait SolverState {
 
   type Cell = (Int, Int)
 

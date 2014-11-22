@@ -1,12 +1,11 @@
-package cakesolutions
+package cakesolutions.selection
+
+import cakesolutions.{SolverState, CellSelection}
 
 import scala.util.Random
-import SolverState._
 
-/**
- * We simply exhaustively search all the cells outside the square defined by left, right, top and bottom.
- */
-trait BasicSolution extends CellSelection {
+trait ExternalSelection extends CellSelection {
+  this: SolverState =>
 
   // Functions that calculate candidate locations for searching
   def possibleLeftCells(): Set[Cell] = {

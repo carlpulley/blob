@@ -1,5 +1,6 @@
 package cakesolutions
 
+import cakesolutions.selection._
 import org.specs2.mutable.Specification
 
 class SolverSpec extends Specification {
@@ -18,12 +19,15 @@ class SolverSpec extends Specification {
   )
 
   "Solver" should {
-    "solve supplied example with the basic solution" in {
-      val solver = new Solver(grid) with BasicSolution
+    /**
+     * We simply exhaustively search all the cells outside the square defined by left, right, top and bottom.
+     */
+    "solve supplied example for arbitrary shapes (i.e. not necessarily blobs)" in {
+      val basicSolver = new Solver(grid) with ExternalSelection
 
-      solver.solve() must beSome.like {
+      basicSolver.solve() must beSome.like {
         case result =>
-          println(s"DEBUG: number of (basic) reads = ${result.reads}\n")
+          println(s"DEBUG: number of basic solver reads = ${result.reads}\n")
           result.left === 2
           result.right === 6
           result.top === 1
@@ -31,12 +35,38 @@ class SolverSpec extends Specification {
       }
     }
 
-    "solve supplied example with the optimised solution" in {
-      val solver = new Solver(grid) with OptimisedSolution
+    /**
+     * Cells are selectively chosen using the boundary of the square defined by left, right, top and bottom.
+     *
+     * This code defines three types of cells:
+     *   - growth cells:         these are (unexplored) cells that 'might' be connected to known one cells on our boundary
+     *   - (boundary) one cells: these are (unexplored) cells on the boundary that are neighbours to known one cells
+     *   - boundary cells:       these are any other (unexplored) cells on the boundary.
+     *
+     * When none of these cells can be found, then we have defined the maximal shape for our blob.
+     *
+     * This solution assumes that the blob is connected and so it is only necessary to consider potential points at which
+     * the blob may cross the currently defined boundary of the square defined by left, right, top and bottom.
+     */
+    "solve supplied example for connected blobs" in {
+      val connectedSolver = new Solver(grid) with GrowthSelection with OneBoundarySelection with BoundarySelection {
+        // Preferentially select (in the following order): a growth cell; or boundary 1 cell; or any other boundary cell
+        override def selectCell(): Option[Cell] = {
+          if (oneCells.isEmpty) {
+            // We have not yet located any one cells, so keep choosing at random from unexplored cells
+            selectAnyCell(cell => zeroCells.isEmpty || !zeroCells.contains(cell))
+          } else {
+            // At least one blob member located
+            super[GrowthSelection].selectCell() orElse
+              super[OneBoundarySelection].selectCell() orElse
+              super[BoundarySelection].selectCell()
+          }
+        }
+      }
 
-      solver.solve() must beSome.like {
+      connectedSolver.solve() must beSome.like {
         case result =>
-          println(s"DEBUG: number of (optimised) reads = ${result.reads}\n")
+          println(s"DEBUG: number of connected solver reads = ${result.reads}\n")
           result.left === 2
           result.right === 6
           result.top === 1

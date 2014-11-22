@@ -1,13 +1,12 @@
 package cakesolutions
 
-import SolverState._
-
 import scala.util.Random
 
 /**
  * Implementations of this trait control how cells are selected by the solver.
  */
 trait CellSelection {
+  this: SolverState =>
 
   def grid: Map[Cell, Boolean]
 
