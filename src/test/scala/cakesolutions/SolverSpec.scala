@@ -26,11 +26,11 @@ class SolverSpec extends Specification {
       val basicSolver = new Solver(grid) with ExternalSelection
 
       val data = (0 to 100).flatMap { _ => basicSolver.reset(); basicSolver.solve().map(_.reads) }
-      println(s"Average result = ${data.sum / 100.0}; Min. reads = ${data.min}; Max. reads = ${data.max}")
+      println(s"Basic solver: Average = ${data.sum / 100.0}; Min. reads = ${data.min}; Max. reads = ${data.max}\n")
 
+      basicSolver.reset()
       basicSolver.solve() must beSome.like {
         case result =>
-          println(s"DEBUG: number of basic solver reads = ${result.reads}\n")
           result.left === 2
           result.right === 6
           result.top === 1
@@ -68,11 +68,11 @@ class SolverSpec extends Specification {
       }
 
       val data = (0 to 100).flatMap { _ => connectedSolver.reset(); connectedSolver.solve().map(_.reads) }
-      println(s"Average result = ${data.sum / 100.0}; Min. reads = ${data.min}; Max. reads = ${data.max}")
+      println(s"Connected solver: Average result = ${data.sum / 100.0}; Min. reads = ${data.min}; Max. reads = ${data.max}\n")
 
+      connectedSolver.reset()
       connectedSolver.solve() must beSome.like {
         case result =>
-          println(s"DEBUG: number of connected solver reads = ${result.reads}\n")
           result.left === 2
           result.right === 6
           result.top === 1
